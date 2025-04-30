@@ -1,0 +1,27 @@
+version: "3"
+services:
+  backend:
+    build: ./server
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/alzheimer
+
+  frontend:
+    build: ./client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+  ml_api:
+    build: ./ml_model
+    ports:
+      - "5001:5000"
