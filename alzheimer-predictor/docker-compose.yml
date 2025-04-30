@@ -1,27 +1,33 @@
-version: "3"
 services:
-  backend:
-    build: ./server
+  mongo:
+    image: mongo
+    container_name: mongo
     ports:
-      - "5000:5000"
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - '5000:5000'
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/yourdbname
     depends_on:
       - mongo
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/alzheimer
 
   frontend:
-    build: ./client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: frontend
     ports:
-      - "3000:3000"
+      - '3000:80'
     depends_on:
       - backend
 
-  mongo:
-    image: mongo
-    ports:
-      - "27017:27017"
-
-  ml_api:
-    build: ./ml_model
-    ports:
-      - "5001:5000"
+volumes:
+  mongo-data:
