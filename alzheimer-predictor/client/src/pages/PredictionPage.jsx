@@ -7,13 +7,12 @@ const PredictionPage = () => {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Updated feature labels and valid ranges
   const featureLabels = [
     { label: "Age (50-100)", min: 50, max: 100 },
     { label: "Gender (0 = Male, 1 = Female)", min: 0, max: 1 },
     { label: "BMI (10-50)", min: 10, max: 50 },
     { label: "MMSE Score (0-30)", min: 0, max: 30 },
-    { label: "ADL Score (0-100)", min: 0, max: 100 }
+    { label: "ADL Score (0-100)", min: 0, max: 100 },
   ];
 
   const handleChange = (index, value) => {
@@ -46,13 +45,13 @@ const PredictionPage = () => {
   };
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "Arial" }}>
-      <h2>Alzheimer's Disease Prediction</h2>
-      <form onSubmit={handleSubmit}>
-        {featureLabels.map((feature, idx) => (
-          <div key={idx}>
-            <label>
-              {feature.label}:{" "}
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <h2 style={styles.title}>🧠 Alzheimer's Disease Prediction</h2>
+        <form onSubmit={handleSubmit} style={styles.form}>
+          {featureLabels.map((feature, idx) => (
+            <div key={idx} style={styles.inputGroup}>
+              <label style={styles.label}>{feature.label}</label>
               <input
                 type="number"
                 value={inputData[idx]}
@@ -60,32 +59,106 @@ const PredictionPage = () => {
                 min={feature.min}
                 max={feature.max}
                 required
+                style={styles.input}
               />
-            </label>
+            </div>
+          ))}
+
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Select Model:</label>
+            <select
+              value={modelType}
+              onChange={(e) => setModelType(e.target.value)}
+              style={styles.select}
+            >
+              <option value="rf">Random Forest</option>
+              <option value="svm">SVM</option>
+              <option value="cnn">CNN</option>
+            </select>
           </div>
-        ))}
 
-        <div>
-          <label>Select Model: </label>
-          <select value={modelType} onChange={(e) => setModelType(e.target.value)}>
-            <option value="rf">Random Forest</option>
-            <option value="svm">SVM</option>
-            <option value="cnn">CNN</option>
-          </select>
-        </div>
+          <button type="submit" style={styles.button} disabled={loading}>
+            {loading ? "Predicting..." : "Predict"}
+          </button>
+        </form>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Predicting..." : "Predict"}
-        </button>
-      </form>
-
-      {result && (
-        <div style={{ marginTop: "1rem", fontWeight: "bold" }}>
-          Prediction Result: {result}
-        </div>
-      )}
+        {result && (
+          <div style={{ marginTop: "1.5rem" }}>
+            <span
+              style={{
+                fontWeight: "bold",
+                fontSize: "1.1rem",
+                color: result.includes("No") ? "#4CAF50" : "#e53935",
+              }}
+            >
+              Prediction Result: {result}
+            </span>
+          </div>
+        )}
+      </div>
     </div>
   );
+};
+
+const styles = {
+  container: {
+    padding: "2rem",
+    display: "flex",
+    justifyContent: "center",
+    backgroundColor: "#f5f7fa",
+    minHeight: "100vh",
+    fontFamily: "Segoe UI, sans-serif",
+  },
+  card: {
+    background: "#fff",
+    padding: "2rem",
+    borderRadius: "1rem",
+    boxShadow: "0 0 20px rgba(0,0,0,0.1)",
+    width: "100%",
+    maxWidth: "600px",
+  },
+  title: {
+    textAlign: "center",
+    marginBottom: "1.5rem",
+    color: "#333",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  inputGroup: {
+    marginBottom: "1rem",
+  },
+  label: {
+    display: "block",
+    marginBottom: "0.5rem",
+    fontWeight: "500",
+    color: "#444",
+  },
+  input: {
+    width: "100%",
+    padding: "0.5rem",
+    fontSize: "1rem",
+    borderRadius: "0.5rem",
+    border: "1px solid #ccc",
+  },
+  select: {
+    width: "100%",
+    padding: "0.5rem",
+    fontSize: "1rem",
+    borderRadius: "0.5rem",
+    border: "1px solid #ccc",
+  },
+  button: {
+    marginTop: "1rem",
+    padding: "0.75rem",
+    backgroundColor: "#007BFF",
+    color: "#fff",
+    fontSize: "1rem",
+    border: "none",
+    borderRadius: "0.5rem",
+    cursor: "pointer",
+  },
 };
 
 export default PredictionPage;
